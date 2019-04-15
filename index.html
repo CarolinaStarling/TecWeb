@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- <link rel="stylesheet" href="css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">TecWeb News</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <form class="form-inline my-2 my-lg-0">
+                <input id="query" class="form-control mr-sm-2" type="search" placeholder="Pesquise a noticia" aria-label="Search">
+                <button id="btnPesquisar" class="btn btn-outline-success my-2 my-sm-0" type="submit">Pesquisa</button>
+            </form>
+        </div>
+    </nav>
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li id="topNoticias" class="breadcrumb-item">
+                <a href="#">Top Notícias Brasil</a>
+            </li>
+            <li id="Fontes" class="breadcrumb-item">
+                <a href="#">Fontes</a>
+            </li>
+        </ol>
+    </nav>
+
+    <div id="divNoticias">
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script>
+        $( document ).ready(function(){
+            $('#topNoticias').click();
+        });
+        $('#btnPesquisar').click(function () {
+            titulo = $('[name=titulo]').val();
+            var query = document.getElementById("query").value;
+            if (query == '') {
+                document.getElementById('divNoticias').innerHTML = ' <div id="divNoticias">Por favor, insira um valor para a pesquisa.</div>';
+            }
+            else {
+                $.ajax({
+                    method: 'GET',
+                    url: "https://newsapi.org/v2/everything?apiKey=33d44db33e4e4fb5845e1ab177e2b89d&language=pt&q=" + query,
+                    contentType: 'application/x-www-form-urlencoded',
+                    success: function (data, textStatus, xhr) {
+                        var artigos = data.articles;
+                        document.getElementById('divNoticias').innerHTML = ' <div id="divNoticias"> </div>';
+                        for (i = 0; i < artigos.length; i++) {
+                            document.getElementById('divNoticias').innerHTML += ('<div id="divNoticias"> <div id="outer"><div id="header"><h1>' + artigos[i].title + '</h1> <span id="lynda-link">' + artigos[i].description + '</span></div><div id="react-container"><span>Fonte:<a href="' + artigos[i].url + '">' + artigos[i].url + '</a></span><br></br><img src="' + artigos[i].urlToImage + '"></div></div></div><br></br>');
+                        }
+                        if (artigos.length <= 0) {
+                            document.getElementById('divNoticias').innerHTML = ' <div id="divNoticias">Não foram encontradas Notícias para a sua pesquisa</div>';
+                        }
+                    },
+                });
+            }
+        });
+
+        $('#topNoticias').click(function () {
+            titulo = $('[name=titulo]').val();
+            $.ajax({
+                method: 'GET',
+                url: "https://newsapi.org/v2/top-headlines?apiKey=33d44db33e4e4fb5845e1ab177e2b89d&language=pt",
+                contentType: 'application/x-www-form-urlencoded',
+                success: function (data, textStatus, xhr) {
+                    var artigos = data.articles;
+                    document.getElementById('divNoticias').innerHTML = ' <div id="divNoticias"> </div>';
+                    for (i = 0; i < artigos.length; i++) {
+                        document.getElementById('divNoticias').innerHTML += ('<div id="divNoticias"> <div id="outer"><div id="header"><h1>' + artigos[i].title + '</h1> <span id="lynda-link">' + artigos[i].description + '</span></div><div id="react-container"><span>Fonte:<a href="' + artigos[i].url + '">' + artigos[i].url + '</a></span><br></br><img src="' + artigos[i].urlToImage + '"></div></div></div><br></br>');
+                    }
+                    if (artigos.length <= 0) {
+                        document.getElementById('divNoticias').innerHTML = ' <div id="divNoticias">Não foram encontradas Notícias para a sua pesquisa</div>';
+                    }
+
+
+                },
+            });
+        });
+
+        $('#Fontes').click(function () {
+            titulo = $('[name=titulo]').val();
+            $.ajax({
+                method: 'GET',
+                url: "https://newsapi.org/v2/sources?apiKey=33d44db33e4e4fb5845e1ab177e2b89d&country=br",
+                contentType: 'application/x-www-form-urlencoded',
+                success: function (data, textStatus, xhr) {
+                    var fontes = data.sources;
+                    document.getElementById('divNoticias').innerHTML = ' <div id="divNoticias"> </div>';
+                    for (i = 0; i < fontes.length; i++) {
+                        document.getElementById('divNoticias').innerHTML += ('<div id="divNoticias"> <div id="outer"><div id="header"><h1>' + fontes[i].name + '</h1> <span id="lynda-link">' + fontes[i].description + '</span></div><div id="react-container"><span>Site:<a href="' + fontes[i].url + '">' + fontes[i].url + '</a></span><br></br></div></div></div><br></br>');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
